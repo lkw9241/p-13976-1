@@ -1,6 +1,6 @@
 package com.ll
 
-data class WiseSaying(val id: Int, val content: String, val author: String)
+data class WiseSaying(val id: Int, var content: String, var author: String)
 var wiseSayings = mutableListOf<WiseSaying>()
 var lastIndex = 0
 
@@ -20,6 +20,8 @@ fun main() {
             actionList()
         } else if (input?.startsWith("삭제")==true) {
             actionDelete(input)
+        }else if (input?.startsWith("수정")==true) {
+            actionModify(input)
         }
     }
 }
@@ -70,7 +72,7 @@ fun actionDelete(input: String){
 
     val deleted = delete(id)
     if(!deleted){
-        println("존재하지 않는 id입니다.")
+        println("${id}번 명언은 존재하지 않습니다.")
     }else{
         println("${id}가 삭제되었습니다.")
     }
@@ -86,6 +88,55 @@ fun delete(id: Int): Boolean {
 //    }
     return wiseSayings.removeIf {it.id == id}
 //    return false
+}
+
+fun actionModify(input: String){
+    val cmdBits = input.split("=", limit = 2)
+    if(cmdBits.size < 2 || cmdBits[1].isEmpty()){
+        println("id를 다시 입력해주세요.")
+        return
+    }
+
+    val id = cmdBits[1].toIntOrNull()
+    if(id == null){
+        println("유효한 숫자르 입력해주세요.")
+        return
+    }
+
+    val wiseSaying = findById(id)
+    if(wiseSaying == null){
+        println("${id}번 명언은 존재하지 않습니다.")
+        return
+    }
+
+    println("명언(기존): ${wiseSaying.content}")
+    print("명언:")
+    val content = readLine()?.trim()
+
+    println("명언(기존): ${wiseSaying.author}")
+    print("작가:")
+    val author = readLine()?.trim()
+
+    modify(wiseSaying, content, author)
+}
+
+fun findById(id : Int): WiseSaying?{
+    for(wiseSaying in wiseSayings){
+        if(wiseSaying.id == id){
+            return wiseSaying
+        }
+    }
+    return null
+}
+
+fun modify(wiseSaying: WiseSaying, content: String?, author: String?){
+    if (!content.isNullOrBlank()) {
+        wiseSaying.content = content
+    }
+    if (!author.isNullOrBlank()) {
+    wiseSaying.author = author
+    }
+    println("${wiseSaying.id}번 명언이 수정되었습니다.")
 }
 
 

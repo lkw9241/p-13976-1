@@ -18,6 +18,8 @@ fun main() {
             actionWrite()
         } else if (input == "목록") {
             actionList()
+        } else if (input?.startsWith("삭제")==true) {
+            actionDelete(input)
         }
     }
 }
@@ -56,3 +58,34 @@ fun findForList(): MutableList<WiseSaying>{
     }
     return forListWiseSayings
 }
+
+fun actionDelete(input: String){
+    val cmdBits = input.split("=", limit = 2)
+    if(cmdBits.size < 2 || cmdBits[1].isEmpty()){
+        println("id를 다시 입력해주세요.")
+        return
+    }
+
+    val id = cmdBits[1].toInt()
+
+    val deleted = delete(id)
+    if(!deleted){
+        println("존재하지 않는 id입니다.")
+    }else{
+        println("${id}가 삭제되었습니다.")
+    }
+}
+
+fun delete(id: Int): Boolean {
+
+//    for(wiseSaying in wiseSayings){
+//        if(wiseSaying.id == id){
+//            wiseSayings.remove(wiseSaying)
+//            return true
+//        }
+//    }
+    return wiseSayings.removeIf {it.id == id}
+//    return false
+}
+
+
